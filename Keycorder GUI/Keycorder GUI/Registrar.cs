@@ -21,8 +21,8 @@ namespace Keycorder_GUI
         public bool IsRunning => _stopwatch.IsRunning;
 
         // List of keys that we are looking for, these are configured in ctor
-        private readonly List<Key> _pressKeys;
-        private readonly List<Key> _durKeys;
+        public readonly List<Key> PressKeys = new List<Key>();
+        public readonly List<Key> DurKeys = new List<Key>();
         public readonly Key PauseKey;
 
         private readonly Stopwatch _stopwatch; 
@@ -36,8 +36,6 @@ namespace Keycorder_GUI
             _stopwatch = new Stopwatch();
 
             // Configure which keys are for what
-            _pressKeys = new List<Key>() { Key.F, Key.G };
-            _durKeys = new List<Key>() { Key.V, Key.B };
             PauseKey = Key.Space;
         }
 
@@ -55,12 +53,12 @@ namespace Keycorder_GUI
                 else { _stopwatch.Start(); }
             }
             // A one off non duration key is pressed
-            else if (_pressKeys.Contains(key))
+            else if (PressKeys.Contains(key))
             {
                 KeyPressEvents.Add(new KeyPressEvent(key, now));
             }
             // A duration key is pressed, check if we already have that key in progress
-            else if (_durKeys.Contains(key))
+            else if (DurKeys.Contains(key))
             {
                 var durEvent = InProgressDurEvents.Find(x => x.Key == key);
                 if (durEvent != default(KeyDurEvent)) // The pressed key was already in progress

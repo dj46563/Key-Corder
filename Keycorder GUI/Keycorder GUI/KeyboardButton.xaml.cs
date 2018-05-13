@@ -48,7 +48,7 @@ namespace Keycorder_GUI
             set => DurationTextBlock.Text = !string.IsNullOrEmpty(value) ? string.Concat(value, "s") : "";
         }
 
-        public Key KeyEnum;
+        public Key KeyEnum { get; set; }
 
         public string Key
         {
@@ -56,7 +56,7 @@ namespace Keycorder_GUI
             set
             {
                 LetterTextBlock.Text = value;
-                Enum.TryParse(value, out KeyEnum);
+                //Enum.TryParse(value, out KeyEnum);
             }
         }
 

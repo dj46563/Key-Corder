@@ -5,21 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Keycorder_GUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="MainWindow" Height="500" Width="1000"
         KeyDown="MainWindow_OnKeyDown" KeyUp="MainWindow_OnKeyUp">
     <Grid Name="MainGrid">
-        <StackPanel Orientation="Horizontal">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
             <TextBlock Name="Stopwatch" Text="{Binding Elapsed}" FontSize="30"/>
             <TextBlock Name="PausedBlock" Text="PAUSED" FontWeight="Bold" FontSize="30" Foreground="DarkRed" Margin="20,0,0,0"></TextBlock>
         </StackPanel>
-        
-        <Grid Name="KeyboardGrid">
+        <Grid Name="KeyboardGrid" HorizontalAlignment="Center" Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
-            <local:KeyboardButton Grid.Row="0" x:Name="FButton" KeyType="OneTime" Key="F"/>
-            <local:KeyboardButton Grid.Row="1" x:Name="VButton" KeyType="Duration" Key="V"/>
+            <StackPanel Name="NumRowPanel" Grid.Row="0" Orientation="Horizontal"/>
+            <StackPanel Name="TopRowPanel" Grid.Row="1" Orientation="Horizontal"/>
+            <StackPanel Name="MidRowPanel" Grid.Row="2" Orientation="Horizontal" Margin="30,0,0,0"/>
+            <StackPanel Name="BotRowPanel" Grid.Row="3" Orientation="Horizontal" Margin="50,0,0,0"/>
         </Grid>
     </Grid>
 </Window>

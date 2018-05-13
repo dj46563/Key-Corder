@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using OfficeOpenXml;
 
 namespace Keycorder_GUI
 {
@@ -47,6 +49,75 @@ namespace Keycorder_GUI
 
             _flashDispatcherTimer.Tick += new EventHandler(FlashDispatcherTimer_Tick);
             _flashDispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
+
+            // Load the config file
+            using (ExcelPackage xlPackage = new ExcelPackage(new FileInfo("Config.xlsx")))
+            {
+                var worksheet = xlPackage.Workbook.Worksheets.First();
+                // Goto the special cell that tells me how many config entries there are
+                int rows = int.Parse(worksheet.Cells[2, 4].Value.ToString());
+                for (int i = 0; i < rows; i++)
+                {
+                    // For each config entry: add the key to the registrar's lists of keys it cares about
+                    string keyType = worksheet.Cells[i + 2, 2].Value.ToString();
+                    string keyValue = worksheet.Cells[i + 2, 1].Value.ToString();
+                    Key key = (Key)Enum.Parse(typeof(Key), keyValue);
+
+                    if (keyType.Equals("Once"))
+                    {
+                        _registrar.PressKeys.Add(key);
+                    }
+                    else if (keyType.Equals("Duration"))
+                    {
+                        _registrar.DurKeys.Add(key);
+                    }
+                }
+            }
+
+            // Programatically create the KeyboardButtons
+            // Uses non ideal parallel arrays to handle the key's display string and the key's enum
+            string[] numRow = new[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=" };
+            Key[] numRowKeys = new Key[] { Key.D1, Key.D2, Key.D3, Key.D4, Key.D5, Key.D6, Key.D7, Key.D8, Key.D9, Key.D0, Key.OemMinus, Key.OemPlus };
+            string[] topRow = new[] { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]" };
+            Key[] topRowKeys = new Key[] { Key.Q, Key.W, Key.E, Key.R, Key.T, Key.Y, Key.U, Key.I, Key.O, Key.P, Key.OemOpenBrackets, Key.OemCloseBrackets };
+            string[] midRow = new[] { "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'" };
+            Key[] midRowKeys = new Key[] { Key.A, Key.S, Key.D, Key.F, Key.G, Key.H, Key.J, Key.K, Key.L, Key.OemSemicolon, Key.OemQuotes };
+            string[] bottomRow = new[] { "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/" };
+            Key[] botRowKeys = new Key[] { Key.Z, Key.X, Key.C, Key.V, Key.B, Key.N, Key.M, Key.OemComma, Key.OemPeriod, Key.OemQuestion };
+            RegisterRow(numRow, numRowKeys, NumRowPanel);
+            RegisterRow(topRow, topRowKeys, TopRowPanel);
+            RegisterRow(midRow, midRowKeys, MidRowPanel);
+            RegisterRow(bottomRow, botRowKeys, BotRowPanel);
+        }
+
+        // Helper function to register each of the three rows of buttons
+        private void RegisterRow(string[] row, Key[] keys, StackPanel panel)
+        {
+            int index = 0;
+            foreach (var keyString in row)
+            {
+                var newKeyControl = new KeyboardButton()
+                {
+                    KeyType = KeyboardButton.KeyTypeEnum.Other,
+                    Key = keyString,
+                    Margin = new Thickness(5),
+                    // A terrible ways to set the key's enum using paralell arrays :(
+                    KeyEnum = keys[index]
+                };
+
+                // Set the correct KeyType for the control, just affects the color of the button
+                if (_registrar.PressKeys.Contains(newKeyControl.KeyEnum))
+                {
+                    newKeyControl.KeyType = KeyboardButton.KeyTypeEnum.OneTime;
+                }
+                else if (_registrar.DurKeys.Contains(newKeyControl.KeyEnum))
+                {
+                    newKeyControl.KeyType = KeyboardButton.KeyTypeEnum.Duration;
+                }
+
+                panel.Children.Add(newKeyControl);
+                index++;
+            }
         }
 
         // Toggle the screen flash 4 times between white and red before stopping itself
@@ -74,12 +145,17 @@ namespace Keycorder_GUI
                 // Whenever any key is pressed let the registrar know
                 _registrar.RegisterEvent(e.Key);
 
-                // Find the GUI keys with this key and flash them
-                foreach (var keyboardButton in KeyboardGrid.Children.Cast<KeyboardButton>().Where(x => x.KeyEnum == e.Key))
+                // Find the GUI key with this key and flash it
+                try
                 {
+                    var keyboardButton = GetKeyboardButtons().First(x => x.KeyEnum == e.Key);
                     keyboardButton.FlashColor();
                     keyboardButton.InProgress = !keyboardButton.InProgress;
                 }
+                // catch an exception that is thrown when we don't have a key to represent the button that was pressed
+                // it really isnt a big deal and there is nothing to handle in this scenerio
+                catch (InvalidOperationException)
+                { }
 
                 // Set the visibility of the "PAUSED" textblock backed on if the stopwatch is running or not
                 PausedBlock.Visibility = !_registrar.IsRunning ? Visibility.Visible : Visibility.Hidden;
@@ -108,11 +184,16 @@ namespace Keycorder_GUI
                 // For all the in progress keys: update the little elapsed times they have
                 foreach (var inProgressEvent in _registrar.InProgressDurEvents)
                 {
-                    KeyboardButton button = KeyboardGrid.Children.Cast<KeyboardButton>()
-                        .First(x => x.KeyEnum == inProgressEvent.Key);
+                    var button = GetKeyboardButtons().First(x => x.KeyEnum == inProgressEvent.Key);
                     button.ElapsedTime = _registrar.Elapsed.Subtract(inProgressEvent.Start).ToString(@"ss\:ff");
                 }
             }
+        }
+
+        // Gets all the keyboard buttons in the keyboardgrid
+        private IEnumerable<KeyboardButton> GetKeyboardButtons()
+        {
+            return KeyboardGrid.GetChildrenOfType<KeyboardButton>();
         }
     }
 }
