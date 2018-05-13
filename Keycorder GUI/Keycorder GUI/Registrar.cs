@@ -11,16 +11,19 @@ namespace Keycorder_GUI
 {
     public class Registrar
     {
+        // The list of key press events that we have logged in memory
         public List<KeyPressEvent> KeyPressEvents { get; set; }
         public List<KeyDurEvent> KeyDurEvents { get; set; }
         public List<KeyDurEvent> InProgressDurEvents { get; set; }
 
+        // Properties to get stopwatch info 
         public TimeSpan Elapsed => _stopwatch.Elapsed;
         public bool IsRunning => _stopwatch.IsRunning;
 
+        // List of keys that we are looking for, these are configured in ctor
         private readonly List<Key> _pressKeys;
         private readonly List<Key> _durKeys;
-        private readonly Key _pauseKey;
+        public readonly Key PauseKey;
 
         private readonly Stopwatch _stopwatch; 
 
@@ -35,22 +38,28 @@ namespace Keycorder_GUI
             // Configure which keys are for what
             _pressKeys = new List<Key>() { Key.F, Key.G };
             _durKeys = new List<Key>() { Key.V, Key.B };
-            _pauseKey = Key.Space;
+            PauseKey = Key.Space;
         }
 
+        // Check if the key is a key we care about, if so handle it
         public void RegisterEvent(Key key)
         {
+            Debug.Print("Key registered");
+
             TimeSpan now = _stopwatch.Elapsed;
 
-            if (key == _pauseKey)
+            // Start/Stop key was pressed
+            if (key == PauseKey)
             {
                 if (_stopwatch.IsRunning) { _stopwatch.Stop(); }
                 else { _stopwatch.Start(); }
             }
+            // A one off non duration key is pressed
             else if (_pressKeys.Contains(key))
             {
                 KeyPressEvents.Add(new KeyPressEvent(key, now));
             }
+            // A duration key is pressed, check if we already have that key in progress
             else if (_durKeys.Contains(key))
             {
                 var durEvent = InProgressDurEvents.Find(x => x.Key == key);

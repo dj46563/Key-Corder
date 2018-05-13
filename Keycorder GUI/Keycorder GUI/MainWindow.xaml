@@ -6,8 +6,20 @@
         xmlns:local="clr-namespace:Keycorder_GUI"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
-        KeyDown="MainWindow_OnKeyDown">
-    <Grid>
-        <TextBlock Name="Stopwatch" Text="{Binding Elapsed}"></TextBlock>
+        KeyDown="MainWindow_OnKeyDown" KeyUp="MainWindow_OnKeyUp">
+    <Grid Name="MainGrid">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Name="Stopwatch" Text="{Binding Elapsed}" FontSize="30"/>
+            <TextBlock Name="PausedBlock" Text="PAUSED" FontWeight="Bold" FontSize="30" Foreground="DarkRed" Margin="20,0,0,0"></TextBlock>
+        </StackPanel>
+        
+        <Grid Name="KeyboardGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <local:KeyboardButton Grid.Row="0" x:Name="FButton" KeyType="OneTime" Key="F"/>
+            <local:KeyboardButton Grid.Row="1" x:Name="VButton" KeyType="Duration" Key="V"/>
+        </Grid>
     </Grid>
 </Window>
