@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Keycorder_GUI"
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="1000"
-        KeyDown="MainWindow_OnKeyDown" KeyUp="MainWindow_OnKeyUp">
+        KeyDown="MainWindow_OnKeyDown" KeyUp="MainWindow_OnKeyUp"
+        Closing="Window_Closing">
     <Window.CommandBindings>
         <CommandBinding Command="New" CanExecute="ClearCommand_CanExecute" Executed="ClearCommand_Executed"/>
         <CommandBinding Command="Save" CanExecute="SaveCommand_CanExecute" Executed="SaveCommand_Executed"/>
@@ -17,7 +18,7 @@
                 <MenuItem Command="New"/>
                 <MenuItem Command="Save"/>
                 <Separator/>
-                <MenuItem Header="Exit"/>
+                <MenuItem Header="Exit" Click="ExitItem_Click"/>
             </MenuItem>
         </Menu>
         <Grid Name="MainGrid">

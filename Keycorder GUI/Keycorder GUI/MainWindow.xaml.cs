@@ -25,6 +25,8 @@ namespace Keycorder_GUI
     public partial class MainWindow : Window
     {
         private readonly Registrar _registrar;
+        // keeps track of if there were any unsaved changes
+        private bool _changed = false;
 
         private readonly DispatcherTimer _stopwatchDispatcherTimer = new DispatcherTimer();
 
@@ -143,6 +145,8 @@ namespace Keycorder_GUI
             {
                 _keysDown.Add(e.Key);
 
+                // set unsaved changes flag
+                _changed = true;
                 // Whenever any key is pressed let the registrar know
                 _registrar.RegisterEvent(e.Key);
 
@@ -239,8 +243,21 @@ namespace Keycorder_GUI
             saveFileDialog.DefaultExt = "xlsx";
             if (saveFileDialog.ShowDialog() == true)
             {
+                // clear unsaved changes flag
+                _changed = false;
                 _registrar.OutputToSheet(saveFileDialog.FileName);
             }
+        }
+
+        private void ExitItem_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (_changed)
+                SaveCommand_Executed(this, null);
         }
     }
 }
