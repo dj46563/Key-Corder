@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using OfficeOpenXml;
 
 namespace Keycorder_GUI
 {
@@ -42,8 +44,6 @@ namespace Keycorder_GUI
         // Check if the key is a key we care about, if so handle it
         public void RegisterEvent(Key key)
         {
-            Debug.Print("Key registered");
-
             TimeSpan now = _stopwatch.Elapsed;
 
             // Start/Stop key was pressed
@@ -55,7 +55,8 @@ namespace Keycorder_GUI
             // A one off non duration key is pressed
             else if (PressKeys.Contains(key))
             {
-                KeyPressEvents.Add(new KeyPressEvent(key, now));
+                KeyDurEvents.Add(new KeyDurEvent(key, now, TimeSpan.MinValue));
+                //KeyPressEvents.Add(new KeyPressEvent(key, now));
             }
             // A duration key is pressed, check if we already have that key in progress
             else if (DurKeys.Contains(key))
@@ -70,6 +71,49 @@ namespace Keycorder_GUI
                 {
                     InProgressDurEvents.Add(new KeyDurEvent(key, now, TimeSpan.MinValue));
                 }
+            }
+        }
+
+        public void Clear()
+        {
+            KeyPressEvents.Clear();
+            KeyDurEvents.Clear();
+            InProgressDurEvents.Clear();
+            _stopwatch.Reset();
+            _stopwatch.Stop();
+        }
+
+        public void Pause()
+        {
+            _stopwatch.Stop();
+        }
+
+        public void OutputToSheet(string filename)
+        {
+            using (ExcelPackage package = new ExcelPackage())
+            {
+                // Create workbook and headers
+                var ws = package.Workbook.Worksheets.Add("Key Log");
+                ws.Cells["A1"].Value = "Key";
+                ws.Cells["B1"].Value = "Start";
+                ws.Cells["C1"].Value = "End";
+                ws.Cells["D1"].Value = "Duration";
+
+                int row = 2;
+                foreach (var keyEvent in KeyDurEvents)
+                {
+                    ws.Cells[row, 1].Value = keyEvent.Key;
+                    ws.Cells[row, 2].Value = keyEvent.Start.ToString(@"mm\:ss\:ff");
+
+                    if (!keyEvent.End.Equals(TimeSpan.MinValue)) // dur event
+                    {
+                        ws.Cells[row, 3].Value = keyEvent.End.ToString(@"mm\:ss\:ff");
+                        ws.Cells[row, 4].Value = keyEvent.Duration.ToString(@"mm\:ss\:ff");
+                    }
+                    row++;
+                }
+
+                package.SaveAs(new FileInfo(filename));
             }
         }
     }

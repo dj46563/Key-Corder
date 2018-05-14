@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using OfficeOpenXml;
+using Microsoft.Win32;
 
 namespace Keycorder_GUI
 {
@@ -194,6 +195,52 @@ namespace Keycorder_GUI
         private IEnumerable<KeyboardButton> GetKeyboardButtons()
         {
             return KeyboardGrid.GetChildrenOfType<KeyboardButton>();
+        }
+
+        private void ClearCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        // Wipe everything
+        private void ClearCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            // For all the in progress keys: remove their elapsed time counters and put them not in progress
+            foreach (var inProgressEvent in _registrar.InProgressDurEvents)
+            {
+                var button = GetKeyboardButtons().First(x => x.KeyEnum == inProgressEvent.Key);
+                button.ElapsedTime = "";
+                button.InProgress = false;
+            }
+
+            // Clear all the log lists in the registrar and reset the stopwatch
+            _registrar.Clear();
+
+            // Update the stopwatch to be 0
+            Stopwatch.Text = _registrar.Elapsed.ToString(@"mm\:ss\:ff");
+
+            // Show that we are paused
+            PausedBlock.Visibility = Visibility.Visible;
+        }
+
+        private void SaveCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        // Prompt for save file location
+        private void SaveCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            // Pause the stopwatch to save
+            _registrar.Pause();
+            PausedBlock.Visibility = Visibility.Visible;
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.DefaultExt = "xlsx";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                _registrar.OutputToSheet(saveFileDialog.FileName);
+            }
         }
     }
 }
