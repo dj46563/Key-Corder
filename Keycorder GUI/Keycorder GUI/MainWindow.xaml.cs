@@ -37,6 +37,10 @@ namespace Keycorder_GUI
         // holds a list of all the keys that are being held down, keys are removed once they do keyup
         private readonly List<Key> _keysDown = new List<Key>();
 
+
+        // TEMP BAD CODE
+        private List<Tuple<Key, string>> _behaviorList = new List<Tuple<Key, string>>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -64,7 +68,20 @@ namespace Keycorder_GUI
                     // For each config entry: add the key to the registrar's lists of keys it cares about
                     string keyType = worksheet.Cells[i + 2, 2].Value.ToString();
                     string keyValue = worksheet.Cells[i + 2, 1].Value.ToString();
+                    string keyBehavior;
+                    try
+                    {
+                        keyBehavior = worksheet.Cells[i + 2, 3].Value.ToString();
+                    }
+                    catch (Exception)
+                    {
+                        keyBehavior = "";
+                    }
+
                     Key key = (Key)Enum.Parse(typeof(Key), keyValue);
+
+                    // Add the key and the behavior to the behavior list to later be used when creating keys
+                    _behaviorList.Add(new Tuple<Key, string>(key, keyBehavior));
 
                     if (keyType.Equals("Once"))
                     {
@@ -105,7 +122,11 @@ namespace Keycorder_GUI
                     Key = keyString,
                     Margin = new Thickness(5),
                     // A terrible ways to set the key's enum using paralell arrays :(
-                    KeyEnum = keys[index]
+                    KeyEnum = keys[index],
+
+                    // set the behavior string by looking at the behavior list, find the pair with the same key enum
+                    // and assign the second value (the behavior string) to the Behavior prop
+                    Behavior = _behaviorList.Find(x => x.Item1 == keys[index]).Item2
                 };
 
                 // Set the correct KeyType for the control, just affects the color of the button

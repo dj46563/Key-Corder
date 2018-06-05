@@ -5,16 +5,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Keycorder_GUI"
              mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="50"
              Width="60" Height="60"
              Loaded="KeyboardButton_OnLoaded">
     <Border BorderBrush="Black" BorderThickness="4">
-        <DockPanel Name="Panel" Background="White">
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center" Margin="3">
-                <TextBlock Name="DurationTextBlock" HorizontalAlignment="Center"></TextBlock>
-            </StackPanel>
-            
-            <TextBlock Name="LetterTextBlock" DockPanel.Dock="Bottom" HorizontalAlignment="Center" FontSize="20" Margin="3">G</TextBlock>
-        </DockPanel>
+        <Grid DockPanel.Dock="Bottom" Name="Panel">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.8*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Name="DurationTextBlock" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Row="1" Name="LetterTextBlock" HorizontalAlignment="Center" FontSize="16">G</TextBlock>
+            <TextBlock Grid.Row="2" Name="BehaviorTextBlock" HorizontalAlignment="Center" FontSize="12">Cough</TextBlock>
+        </Grid>
     </Border>
 </UserControl>

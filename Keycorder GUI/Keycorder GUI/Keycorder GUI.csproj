@@ -64,6 +64,9 @@
     <Compile Include="KeyboardButton.xaml.cs">
       <DependentUpon>KeyboardButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RecentAction.xaml.cs">
+      <DependentUpon>RecentAction.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Registrar.cs" />
     <Page Include="KeyboardButton.xaml">
       <SubType>Designer</SubType>
@@ -83,6 +86,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="RecentAction.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

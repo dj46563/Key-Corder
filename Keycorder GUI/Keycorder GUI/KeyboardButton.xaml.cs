@@ -48,6 +48,17 @@ namespace Keycorder_GUI
             set => DurationTextBlock.Text = !string.IsNullOrEmpty(value) ? string.Concat(value, "s") : "";
         }
 
+        private string _behavior;
+        public string Behavior
+        {
+            get => _behavior;
+            set
+            {
+                _behavior = value;
+                BehaviorTextBlock.Text = value;
+            }
+        }
+
         public Key KeyEnum { get; set; }
 
         public string Key
