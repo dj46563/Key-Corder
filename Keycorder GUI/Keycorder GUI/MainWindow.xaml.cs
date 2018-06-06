@@ -58,7 +58,7 @@ namespace Keycorder_GUI
             _flashDispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
 
             // Load the config file
-            using (ExcelPackage xlPackage = new ExcelPackage(new FileInfo("Config.xlsx")))
+            using (ExcelPackage xlPackage = new ExcelPackage(new FileInfo(@"C:\Work\Key-Corder\Keycorder GUI\Keycorder GUI\Config.xlsx")))
             {
                 var worksheet = xlPackage.Workbook.Worksheets.First();
                 // Goto the special cell that tells me how many config entries there are
