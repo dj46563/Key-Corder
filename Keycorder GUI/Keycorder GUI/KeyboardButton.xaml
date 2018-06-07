@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              Width="60" Height="60"
              Loaded="KeyboardButton_OnLoaded">
-    <Border BorderBrush="Black" BorderThickness="4">
+    <Border Style="{DynamicResource ButtonBorderStyle}">
         <Grid DockPanel.Dock="Bottom" Name="Panel">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.8*"/>

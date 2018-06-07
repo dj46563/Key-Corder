@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Keycorder_GUI">
+    <Style x:Key="PausedButtonStyle" TargetType="TextBlock">
+        <Setter Property="Text" Value="PAUSED"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontSize" Value="30"/>
+        <Setter Property="Foreground" Value="DarkRed"/>
+        <Setter Property="Margin" Value="20,0,0,0"/>
+    </Style>
+    <Style x:Key="ButtonBorderStyle" TargetType="Border">
+        <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="BorderThickness" Value="4"/>
+    </Style>
+</ResourceDictionary>

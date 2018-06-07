@@ -30,7 +30,7 @@
             <StackPanel Orientation="Horizontal" Grid.Row="0">
                 <!--<local:RecentAction x:Name="recent"></local:RecentAction>-->
                 <TextBlock Name="Stopwatch" Text="{Binding Elapsed}" FontSize="30"/>
-                <TextBlock Name="PausedBlock" Text="PAUSED" FontWeight="Bold" FontSize="30" Foreground="DarkRed" Margin="20,0,0,0"></TextBlock>
+                <TextBlock Name="PausedBlock" Style="{DynamicResource PausedButtonStyle}"/>
             </StackPanel>
             <Grid Name="KeyboardGrid" HorizontalAlignment="Center" Grid.Row="1">
                 <Grid.RowDefinitions>

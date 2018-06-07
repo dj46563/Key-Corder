@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using OfficeOpenXml;
 using Microsoft.Win32;
+using System.Collections.ObjectModel;
 
 namespace Keycorder_GUI
 {
@@ -44,6 +45,9 @@ namespace Keycorder_GUI
         public MainWindow()
         {
             InitializeComponent();
+
+            // Load resource dictionaries
+            ResourceLoader("Styles.xaml");
 
             _registrar = new Registrar("cfg");
             Stopwatch.DataContext = _registrar;
@@ -279,6 +283,14 @@ namespace Keycorder_GUI
         {
             if (_changed)
                 SaveCommand_Executed(this, null);
+        }
+        private void ResourceLoader(string skin)
+        {
+            ResourceDictionary style = new ResourceDictionary();
+            style.Source = new Uri(skin, UriKind.Relative);
+            Collection<ResourceDictionary> appMergedDictionaries = Application.Current.Resources.MergedDictionaries;
+
+            appMergedDictionaries.Add(style);
         }
     }
 }
