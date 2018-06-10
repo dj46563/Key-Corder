@@ -146,6 +146,11 @@ namespace Keycorder_GUI
                     newKeyControl.KeyType = KeyboardButton.KeyTypeEnum.Duration;
                 }
 
+                // If the button is an unused key then have it flash red, if not it flashes green
+                newKeyControl.FlashColorBrush = newKeyControl.KeyType == KeyboardButton.KeyTypeEnum.Other
+                    ? Brushes.Red
+                    : Brushes.LimeGreen;
+
                 panel.Children.Add(newKeyControl);
                 index++;
             }
