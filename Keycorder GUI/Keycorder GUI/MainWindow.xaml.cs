@@ -46,6 +46,9 @@ namespace Keycorder_GUI
         {
             InitializeComponent();
 
+            // Set the current domain to the application's directory so that Config.xlsx can be found
+            AppDomain.CurrentDomain.SetData("DataDirectory", Directory.GetCurrentDirectory());
+
             // Load resource dictionaries
             ResourceLoader("Styles.xaml");
 
@@ -62,7 +65,7 @@ namespace Keycorder_GUI
             _flashDispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
 
             // Load the config file
-            using (ExcelPackage xlPackage = new ExcelPackage(new FileInfo(@"C:\Work\Key-Corder\Keycorder GUI\Keycorder GUI\Config.xlsx")))
+            using (ExcelPackage xlPackage = new ExcelPackage(new FileInfo("Config.xlsx")))
             {
                 var worksheet = xlPackage.Workbook.Worksheets.First();
                 // Goto the special cell that tells me how many config entries there are
