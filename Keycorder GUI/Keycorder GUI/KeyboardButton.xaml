@@ -1,4 +1,5 @@
 ﻿<UserControl x:Class="Keycorder_GUI.KeyboardButton"
+             x:Name="_this"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,7 +7,8 @@
              xmlns:local="clr-namespace:Keycorder_GUI"
              mc:Ignorable="d" 
              Width="60" Height="60"
-             Loaded="KeyboardButton_OnLoaded">
+             Loaded="KeyboardButton_OnLoaded"
+             DataContext="{Binding ElementName=_this}">
     <Border Style="{DynamicResource ButtonBorderStyle}">
         <Grid DockPanel.Dock="Bottom" Name="Panel">
             <Grid.RowDefinitions>
@@ -14,9 +16,9 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Name="DurationTextBlock" HorizontalAlignment="Center"></TextBlock>
-            <TextBlock Grid.Row="1" Name="LetterTextBlock" HorizontalAlignment="Center" FontSize="16">G</TextBlock>
-            <TextBlock Grid.Row="2" Name="BehaviorTextBlock" HorizontalAlignment="Center" FontSize="12">Cough</TextBlock>
+            <TextBlock Grid.Row="0" Name="DurationTextBlock" HorizontalAlignment="Center" Text="{Binding ElapsedTime}"></TextBlock>
+            <TextBlock Grid.Row="1" Name="LetterTextBlock" HorizontalAlignment="Center" FontSize="16" Text="{Binding Key}"></TextBlock>
+            <TextBlock Grid.Row="2" Name="BehaviorTextBlock" HorizontalAlignment="Center" FontSize="12" Text="{Binding Behavior}"></TextBlock>
         </Grid>
     </Border>
 </UserControl>

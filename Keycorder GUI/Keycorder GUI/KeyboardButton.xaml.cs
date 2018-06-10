@@ -41,35 +41,42 @@ namespace Keycorder_GUI
             set => _backgroundColor = Panel.Background = value;
         }
 
-        // The little counter on the top of the key for duration keys that are counting
         public string ElapsedTime
         {
-            get => DurationTextBlock.Text;
-            set => DurationTextBlock.Text = !string.IsNullOrEmpty(value) ? string.Concat(value, "s") : "";
+            get { return String.Concat((string)GetValue(ElapsedTimeProperty), "s"); }
+            set { SetValue(ElapsedTimeProperty, value); }
         }
 
-        private string _behavior;
+        // Using a DependencyProperty as the backing store for ElapsedTime.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ElapsedTimeProperty =
+            DependencyProperty.Register("ElapsedTime", typeof(string), typeof(KeyboardButton), new PropertyMetadata(""));
+
+
         public string Behavior
         {
-            get => _behavior;
-            set
-            {
-                _behavior = value;
-                BehaviorTextBlock.Text = value;
-            }
+            get { return (string)GetValue(BehaviorProperty); }
+            set { SetValue(BehaviorProperty, value); }
         }
+
+        // Using a DependencyProperty as the backing store for Behavior.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty BehaviorProperty =
+            DependencyProperty.Register("Behavior", typeof(string), typeof(KeyboardButton), new PropertyMetadata(""));
+
+
 
         public Key KeyEnum { get; set; }
 
         public string Key
         {
-            get => LetterTextBlock.Text;
-            set
-            {
-                LetterTextBlock.Text = value;
-                //Enum.TryParse(value, out KeyEnum);
-            }
+            get { return (string)GetValue(KeyProperty); }
+            set { SetValue(KeyProperty, value); }
         }
+
+        // Using a DependencyProperty as the backing store for Key.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty KeyProperty =
+            DependencyProperty.Register("Key", typeof(string), typeof(KeyboardButton), new PropertyMetadata(""));
+
+
 
         public Brush FlashColorBrush { get; set; }
 
