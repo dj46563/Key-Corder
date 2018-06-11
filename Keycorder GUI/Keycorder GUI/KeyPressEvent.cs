@@ -11,6 +11,7 @@ namespace Keycorder_GUI
     {
         public Key Key { get; set; }
         public TimeSpan Start { get; set; }
+        public string Behavior { get; set; }
 
         public KeyPressEvent(Key key, TimeSpan start)
         {

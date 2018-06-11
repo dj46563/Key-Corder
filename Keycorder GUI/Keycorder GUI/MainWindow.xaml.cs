@@ -38,10 +38,6 @@ namespace Keycorder_GUI
         // holds a list of all the keys that are being held down, keys are removed once they do keyup
         private readonly List<Key> _keysDown = new List<Key>();
 
-
-        // TEMP BAD CODE
-        private List<Tuple<Key, string>> _behaviorList = new List<Tuple<Key, string>>();
-
         public MainWindow()
         {
             InitializeComponent();
@@ -85,18 +81,20 @@ namespace Keycorder_GUI
                         keyBehavior = "";
                     }
 
-                    Key key = (Key)Enum.Parse(typeof(Key), keyValue);
-
-                    // Add the key and the behavior to the behavior list to later be used when creating keys
-                    _behaviorList.Add(new Tuple<Key, string>(key, keyBehavior));
+                    Key key = (Key) Enum.Parse(typeof(Key), keyValue);
+                    KeyBehavior kb = new KeyBehavior()
+                    {
+                        key = key,
+                        behavior = keyBehavior
+                    };
 
                     if (keyType.Equals("Once"))
                     {
-                        _registrar.PressKeys.Add(key);
+                        _registrar.PressKeys.Add(kb);
                     }
                     else if (keyType.Equals("Duration"))
                     {
-                        _registrar.DurKeys.Add(key);
+                        _registrar.DurKeys.Add(kb);
                     }
                 }
             }
@@ -133,15 +131,25 @@ namespace Keycorder_GUI
 
                     // set the behavior string by looking at the behavior list, find the pair with the same key enum
                     // and assign the second value (the behavior string) to the Behavior prop
-                    Behavior = _behaviorList.Find(x => x.Item1 == keys[index]).Item2
-                };
+            };
+
+                // set the behavior string of the key
+                try
+                {
+                    newKeyControl.Behavior = _registrar.GetBehaviorOfKey(keys[index]);
+                }
+                catch (ArgumentException e)
+                {
+                    newKeyControl.Behavior = "";
+                }
 
                 // Set the correct KeyType for the control, just affects the color of the button
-                if (_registrar.PressKeys.Contains(newKeyControl.KeyEnum))
+                // Select turns the list of key, behavior structs into just a list of key enums
+                if (_registrar.PressKeys.Select(x => x.key).Contains(newKeyControl.KeyEnum))
                 {
                     newKeyControl.KeyType = KeyboardButton.KeyTypeEnum.OneTime;
                 }
-                else if (_registrar.DurKeys.Contains(newKeyControl.KeyEnum))
+                else if (_registrar.DurKeys.Select(x => x.key).Contains(newKeyControl.KeyEnum))
                 {
                     newKeyControl.KeyType = KeyboardButton.KeyTypeEnum.Duration;
                 }
