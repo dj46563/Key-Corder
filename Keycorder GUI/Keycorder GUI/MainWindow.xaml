@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Keycorder_GUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="1000"
+        Title="Keycorder" Height="500" Width="1000"
         KeyDown="MainWindow_OnKeyDown" KeyUp="MainWindow_OnKeyUp"
         Closing="Window_Closing">
     <Window.CommandBindings>
