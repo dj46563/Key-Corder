@@ -125,6 +125,15 @@ namespace Keycorder_GUI
             var pressStats = Enumerable.Repeat(new { Key = Key.A, Count = 0 }, 0).ToList();
             var durStats = Enumerable.Repeat(new { Key = Key.A, Time = TimeSpan.Zero }, 0).ToList();
 
+            foreach (KeyBehavior key in PressKeys)
+            {
+                pressStats.Add(new { Key = key.key, Count = 0 });
+            }
+            foreach (KeyBehavior key in DurKeys)
+            {
+                durStats.Add(new { Key = key.key, Time = TimeSpan.Zero });
+            }
+
             using (ExcelPackage package = new ExcelPackage())
             {
                 // Create workbook and headers
@@ -196,6 +205,7 @@ namespace Keycorder_GUI
                 ws.Cells["H2"].Value = "Behavior";
                 ws.Cells["I2"].Value = "Count";
                 row = 3;
+                
                 foreach (var stat in pressStats)
                 {
                     ws.Cells[row, 7].Value = stat.Key;
@@ -209,14 +219,20 @@ namespace Keycorder_GUI
                 ws.Cells[row, 7].Value = "Key";
                 ws.Cells[row, 8].Value = "Behavior";
                 ws.Cells[row, 9].Value = "Percentage";
+                ws.Cells[row, 10].Value = "Duration (s)";
                 row++;
                 foreach (var stat in durStats)
                 {
                     ws.Cells[row, 7].Value = stat.Key;
                     ws.Cells[row, 8].Value = GetBehaviorOfKey(stat.Key);
-                    ws.Cells[row, 9].Value = Math.Round((stat.Time.TotalMilliseconds / _stopwatch.Elapsed.TotalMilliseconds * 100), 3).ToString(CultureInfo.InvariantCulture) + "%";
+                    ws.Cells[row, 9].Value = Math.Round((stat.Time.TotalMilliseconds / _stopwatch.Elapsed.TotalMilliseconds * 100), 1).ToString(CultureInfo.InvariantCulture) + "%";
+                    ws.Cells[row, 10].Value = Math.Round(stat.Time.TotalSeconds, 2);
                     row++;
                 }
+
+                // display total session time
+                ws.Cells[1, 11].Value = "Session Time";
+                ws.Cells[2, 11].Value = Math.Round(_stopwatch.Elapsed.TotalSeconds, 2);
 
                 package.SaveAs(new FileInfo(filename));
             }
