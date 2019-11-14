@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using OfficeOpenXml;
 
@@ -234,7 +235,15 @@ namespace Keycorder_GUI
                 ws.Cells[1, 11].Value = "Session Time";
                 ws.Cells[2, 11].Value = Math.Round(_stopwatch.Elapsed.TotalSeconds, 2);
 
-                package.SaveAs(new FileInfo(filename));
+                try
+                {
+                    package.SaveAs(new FileInfo(filename));
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("File could not be saved.\nMake sure the file isn't already open", "Error");
+                }
+                
             }
         }
     }
