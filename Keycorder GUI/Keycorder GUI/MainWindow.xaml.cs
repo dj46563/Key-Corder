@@ -281,7 +281,8 @@ namespace Keycorder_GUI
             PausedBlock.Visibility = Visibility.Visible;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.DefaultExt = "xlsx";
+            saveFileDialog.Filter = "Excel file (*.xlsx)|*.xlsx";
+            //saveFileDialog.DefaultExt = "xlsx";
             if (saveFileDialog.ShowDialog() == true)
             {
                 // clear unsaved changes flag
